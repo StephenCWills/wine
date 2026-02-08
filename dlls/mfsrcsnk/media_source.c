@@ -69,6 +69,8 @@ WINE_DEFAULT_DEBUG_CHANNEL(mfplat);
         return object;                                                                             \
     }
 
+#include "imfbytestream_read_hack.h"
+
 #define DEFINE_MF_ASYNC_CALLBACK_(type, name, impl_from, pfx, mem, expr)                           \
     static struct type *impl_from(IMFAsyncCallback *iface)                                         \
     {                                                                                              \
@@ -1739,7 +1741,7 @@ static NTSTATUS CDECL media_source_read_cb(struct winedmo_stream *stream, BYTE *
     struct media_source *source = CONTAINING_RECORD(stream, struct media_source, winedmo_stream);
     TRACE("stream %p, buffer %p, size %p\n", stream, buffer, size);
 
-    if (FAILED(IMFByteStream_Read(source->stream, buffer, *size, size)))
+    if (FAILED(IMFByteStream_Read_Hack(source->stream, buffer, *size, size)))
         return STATUS_UNSUCCESSFUL;
     return STATUS_SUCCESS;
 }
